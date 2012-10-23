@@ -8,12 +8,12 @@ Given /the following movies exist/ do |movies_table|
   end
 end
 
-Then /I should (not )?see the following movies: (.*)/ do |notsee, movie_list|
-  movie_list.split(/\s*\|\s*/).each do |movie_title|
+Then /I should (not )?see the following movies/ do |notsee, movies_list|
+  movies_list.hashes.each do |movie|
     if notsee
-      assert !page.body.include?(movie_title)
+      assert !page.body.include?(movie[:title])
     else
-      assert page.body.include?(movie_title)
+      assert page.body.include?(movie[:title])
     end
   end
 end
@@ -43,4 +43,8 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
+end
+
+Then /I should see all the movies/ do
+  assert Movie.count == page.all("table#movies tbody tr").count
 end
